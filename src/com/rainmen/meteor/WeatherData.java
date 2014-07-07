@@ -8,8 +8,8 @@ package com.rainmen.meteor;
  *
  */
 public class WeatherData {
-	public int longitude;
-	public int latitude;
+	public double longitude;
+	public double latitude;
 	public String country = "NONE";
 	public double sunrise = -1;	//-1 = not set
 	public double sunset  = -1;	//-1 = not set
@@ -24,7 +24,7 @@ public class WeatherData {
 	public double cloudPercent = -1;  //-1 = not set
 	public String name = "None";
 
-	public WeatherData(int log, int lat, String desc) {
+	public WeatherData(double log, double lat, String desc) { //Required data, all others optional
 		longitude = log;
 		latitude  = lat;
 		description = desc;
