@@ -24,7 +24,7 @@ public class WeatherData {
 	public double cloudPercent = -1;  //-1 = not set
 	public String name = "None";
 
-	public WeatherData(int log, int lat, String desc) {
+	public WeatherData(int log, int lat, String desc) { //Required data, all others optional
 		longitude = log;
 		latitude  = lat;
 		description = desc;

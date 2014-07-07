@@ -9,6 +9,7 @@ package com.rainmen.meteor;
  */
 public class Main {
     public static void main(String[] args) {
-
+	GUI temGui = new GUI();
+	temGui.setVisible(true);
     }
 }
