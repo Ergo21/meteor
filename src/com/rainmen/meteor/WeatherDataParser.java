@@ -5,10 +5,8 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Optional;
 
@@ -22,8 +20,10 @@ import java.util.Optional;
 public class WeatherDataParser {
 
     public WeatherData parseStream(Optional<InputStream> is) {
+        WeatherData dataObject = new WeatherData(0, 0, "");
+        
         if (!is.isPresent())
-            return new WeatherData();
+            return dataObject;
 
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory
@@ -36,40 +36,18 @@ public class WeatherDataParser {
 
 
             NodeList cityData = doc.getElementsByTagName("city");
-            Element e = (Element) cityData.item(0);
-            System.out.println(e.getAttribute("id") + " " + e.getAttribute("name"));
-            Element e2 = (Element) e.getElementsByTagName("coord").item(0);
+            Element tmpElem = (Element) cityData.item(0);
+            dataObject.name = tmpElem.getAttribute("name");
+            
+            Element tmpElem2 = (Element) tmpElem.getElementsByTagName("coord").item(0);
+            dataObject.latitude = Double.parseDouble(tmpElem2.getAttribute("lat"));
+            dataObject.longitude = Double.parseDouble(tmpElem2.getAttribute("lon"));
 
-            System.out.println("Coord Lon : " + e2.getAttribute("lon"));
-            System.out.println("Coord Lat : " + e2.getAttribute("lat"));
-
-            /*for (int temp = 0; temp < nList.getLength(); temp++) {
-
-                Node nNode = nList.item(temp);
-
-                System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                    Element eElement = (Element) nNode;
-
-                    System.out.println("City id : "
-                            + eElement.getAttribute("id"));
-                    System.out.println("City name : "
-                            + eElement.getAttribute("name"));
-
-                    Element e = (Element) eElement.getElementsByTagName("coord").item(0);
-
-                    System.out.println("Coord Lon : " + e.getAttribute("lon"));
-                    System.out.println("Coord Lat : " + e.getAttribute("lat"));
-
-                }
-            }*/
         }
         catch (Exception e) {
             System.out.println("Error while parsing: " + e.getMessage());
         }
 
-        return new WeatherData();
+        return dataObject;
     }
 }
