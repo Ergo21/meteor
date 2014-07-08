@@ -10,6 +10,7 @@ package com.rainmen.meteor;
 public class Main {
 
     public static void main(String[] args) {
-
+        WeatherData data = new SiteAPI().getWeatherDataByCity("Paris");
+        System.out.println(data.latitude + " " + data.longitude + " " + data.name);
     }
 }
