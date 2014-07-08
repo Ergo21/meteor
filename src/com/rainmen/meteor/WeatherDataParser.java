@@ -4,8 +4,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
 import java.io.InputStream;
@@ -19,6 +17,8 @@ import java.util.Optional;
  *
  */
 public class WeatherDataParser {
+    
+    private Document doc;
 
     public WeatherData parseStream(Optional<InputStream> is) {
         WeatherData dataObject = new WeatherData(0, 0, "");
@@ -29,24 +29,22 @@ public class WeatherDataParser {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(is.get());
+            doc = dBuilder.parse(is.get());
             doc.getDocumentElement().normalize();
 
             is.get().close();
 
-            Element tmp = (Element) doc.getElementsByTagName("city").item(0);
-            dataObject.name = tmp.getAttribute("name");
-
-            tmp = (Element) tmp.getElementsByTagName("coord").item(0);
-            dataObject.latitude = Double.parseDouble(tmp.getAttribute("lat"));
-            dataObject.longitude = Double.parseDouble(tmp.getAttribute("lon"));
-
-
-            Element t = (Element) doc.getElementsByTagName("direction").item(0);
-            System.out.println(t.getAttribute("value"));
-
-            //dataObject.country = tmp.getAttribute(name)
-
+            dataObject.name = getAttribute("name", "city");
+            dataObject.country = getTagData("country");
+            dataObject.humidity = Integer.parseInt(getAttribute("value", "humidity"));
+            dataObject.pressure = Integer.parseInt(getAttribute("value", "pressure"));
+            dataObject.windSpeed = Double.parseDouble(getAttribute("value", "speed"));
+            
+            dataObject.temperature = Double.parseDouble(getAttribute("value", "temperature"));
+            
+            
+            dataObject.latitude = Double.parseDouble(getAttribute("lat", "coord"));
+            dataObject.longitude = Double.parseDouble(getAttribute("lon", "coord"));
         }
         catch (Exception e) {
             System.out.println("Error while parsing: " + e.getMessage());
@@ -55,15 +53,15 @@ public class WeatherDataParser {
         return dataObject;
     }
 
-    private String getAttribute(String attr, String tag, Node node) {
-        if (node.getNodeType() == Node.DOCUMENT_NODE) {
-            Document doc = (Document) node;
-        }
-        else if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-        }
-
-
-        return "";
+    private String getAttribute(String attr, String tag) {
+        // we can namespace if there are two same tags
+        // care no bounds checking
+        Element e = (Element) doc.getElementsByTagName(tag).item(0);
+        return e.getAttribute(attr);
+    }
+    
+    private String getTagData(String tag) {
+        // no bounds checking
+        return doc.getElementsByTagName(tag).item(0).getTextContent();
     }
 }
